@@ -24,22 +24,16 @@ int main(int argc, char **args) {
     // compatible mode, sizeof(int) should be 4 bytes (and 1 byte should be 8
     // bits). This means that after allocating space for these variables, our
     // memory space will look like this:
-    // |------- 4 bytes -------|
-    // | username (0x00000000) |   lower memory addresses
-    // |-----------------------|            |
+    // |------- 4 bytes -------|   lower memory addresses
     // | username (0x00000000) |            |
     // |-----------------------|            |
-    // | username (0x00000000) |            |
-    // |-----------------------|            V
-    // |   key (0xdeadbeef)    |  higher memory addresses
-    // |-----------------------|
+    // |   key (0xdeadbeef)    |            V
+    // |-----------------------|  higher memory addresses
     int key = 0xdeadbeef;
-    // TODO(dylan): Compiler optimization is messing with longer strings,
-    // probably placing them onto the heap instead of the stack. Fix?
     char username[4];
 
-    // Now we're going to read user input and copy it into the "uid" string we
-    // just allocated. We only have space for 12 bytes, but by not explicitly
+    // Now we're going to read user input and copy it into the "username" string
+    // we just allocated. We only have space for 4 bytes, but by not explicitly
     // checking this, we introduce a buffer overflow exploit.
     gets(username);
 
