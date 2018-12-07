@@ -6,9 +6,9 @@ CC = clang
 BUILD_DIR = build
 EXPLOITABLE_FLAGS = -fno-stack-protector
 
-ex1: ex1.c
+ex1: src/ex1.c
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(EXPLOITABLE_FLAGS) -o $(BUILD_DIR)/ex1 ex1.c
+	$(CC) $(EXPLOITABLE_FLAGS) -o $(BUILD_DIR)/ex1 src/ex1.c
 
 .PHONY: clean
 
