@@ -42,9 +42,9 @@ int main(int argc, char **args) {
     gets(username);
 
     // We now check the value in "key" to see if it matches the magic value we
-    // want it to. In ASCII, this value is equivalent to "AAAA" to make life
+    // want it to. In ASCII, this value is equivalent to "ABCD" to make life
     // easy on us.
-    if (key == 0x41414141) {
+    if (key == 0x41424344) {
         printf("Exploit succeeded\n");
         return 0;
     } else {
