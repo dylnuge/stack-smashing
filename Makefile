@@ -4,6 +4,9 @@
 
 CC = clang
 BUILD_DIR = build
+# Adding -arch i386 here will build 32-bit code instead of 64-bit code
+# This can make addresses look more manageable, and help match the slide decks
+# more closely, but it won't work on OSX Mojave (10.14) or later.
 EXPLOITABLE_FLAGS = -fno-stack-protector
 
 all: ex1 ex2
