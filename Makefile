@@ -4,10 +4,26 @@
 
 CC = clang
 BUILD_DIR = build
+
 # Adding -arch i386 here will build 32-bit code instead of 64-bit code
 # This can make addresses look more manageable, and help match the slide decks
 # more closely, but it won't work on OSX Mojave (10.14) or later.
-EXPLOITABLE_FLAGS = -fno-stack-protector
+#
+# Here's what the options we do have do:
+#     -fno-stack-protector: Compile our code without stack canaries. If we don't
+#         use this option, then we'd have a stack canary after a 12-character
+#         buffer which would segfault when written into. Fun fact: if the
+#         buffer was 7 characters or less, this _wouldn't matter_ (at least on
+#         64-bit Mojave where I tested it).
+#     -Wl: Passes the comma separated args to the linker. The next two args are
+#         for the linker.
+#     -allow_stack_execute: Sets the stack as executable for example 3. Doesn't
+#         matter for the other two examples, but otherwise when we try to jump
+#         to our stack we'd segfault.
+#     -no_pie: Turns off position independent executable builds, which are
+#         default. This matters for example 2: without it, we would not be able
+#         to know the exact address `root_mode` is at when we run.
+EXPLOITABLE_FLAGS = -fno-stack-protector -Wl,-allow_stack_execute,-no_pie
 
 all: ex1 ex2
 

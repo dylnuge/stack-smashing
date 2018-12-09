@@ -7,11 +7,45 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+
+// For the most part, this code isn't crucial to understand. It's basically the
+// boilerplate minimum for working with sockets. It's not very good socket code.
+// If you're thinking of learning how sockets work, seriously, this is bad code
+void unsafe_bind_and_read_domain_socket(char *buf, char *path) {
+    // Open a unix (PF_LOCAL) socket and capture the file descriptor
+    int fd = socket(PF_LOCAL, SOCK_STREAM, 0);
+    // Bind that socket to a file at `path`
+    struct sockaddr_un addr;
+    addr.sun_family = PF_LOCAL;
+    strncpy(addr.sun_path, path, sizeof(addr.sun_path));
+    bind(fd, (struct sockaddr*)&addr, sizeof(addr));
+
+    // Listen to incoming connection from the socket
+    listen(fd, 1);
+    // Wait for an incoming connection, then accept it and capture the
+    // connection's file descriptor
+    int cd = accept(fd, NULL, NULL);
+    // Read 8 bytes at a time
+    // Here's where the unsafe code comes into play. We don't check the size of
+    // the buffer we're passed, so we'll keep reading until the connection
+    // closes (8 bytes at a time), even if the buffer has run out of space for
+    // us.
+    while(read(cd, buf, 8) != 0) {
+        buf += 8;
+    }
+
+    // Clean up by closing our files and unlinking the socket path
+    close(fd);
+    close(cd);
+    unlink(path);
+}
+
 /*
  * Didn't wind up using this, but it's code to do sockets via standard network
- * ports instead of using a UNIX domain socket
+ * ports instead of using a UNIX domain socket. It has similar properties to the
+ * function above. I haven't tested it.
  */
-void bind_and_read_socket(char *buf, unsigned short port) {
+void unsafe_bind_and_read_socket(char *buf, unsigned short port) {
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     int fd = socket(PF_INET, SOCK_RAW, IPPROTO_RAW);
@@ -30,34 +64,12 @@ void bind_and_read_socket(char *buf, unsigned short port) {
     bind(fd, (struct sockaddr*) &addr, sizeof(addr));
     listen(fd, 1);
     int cd = accept(fd, NULL, NULL);
-    while(read(cd, buf, 10) != 0) {
+    while(read(cd, buf, 8) != 0) {
         printf("read %s\n", buf);
-        buf += 10;
+        buf += 8;
     }
 
     // Clean up
     close(fd);
 }
 
-void bind_and_read_domain_socket(char *buf, char *path) {
-    // Open a socket for writing to at "socket"
-    // We need this so we can write non-ASCII characters to our buffer
-    // String overflows are _more limiting_ than this one, but that doesn't mean
-    // they can't still be used to do damage, especially to availability.
-    int fd = socket(PF_LOCAL, SOCK_STREAM, 0);
-    struct sockaddr_un addr;
-    addr.sun_family = PF_LOCAL;
-    strncpy(addr.sun_path, path, sizeof(addr.sun_path));
-    bind(fd, (struct sockaddr*)&addr, sizeof(addr));
-
-    // Read from the socket
-    listen(fd, 1);
-    int cd = accept(fd, NULL, NULL);
-    while(read(cd, buf, 30) != 0) {
-        printf("read %s\n", buf);
-    }
-
-    // Clean up
-    close(fd);
-    unlink(path);
-}
