@@ -25,7 +25,7 @@ BUILD_DIR = build
 #         to know the exact address `root_mode` is at when we run.
 EXPLOITABLE_FLAGS = -fno-stack-protector -Wl,-allow_stack_execute,-no_pie
 
-all: ex1 ex2
+all: ex1 ex2 ex3
 
 ex1: src/ex1.c
 	mkdir -p $(BUILD_DIR)
@@ -34,6 +34,10 @@ ex1: src/ex1.c
 ex2: src/ex2.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(EXPLOITABLE_FLAGS) -o $(BUILD_DIR)/ex2 src/ex2.c
+
+ex3: src/ex3.c
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(EXPLOITABLE_FLAGS) -o $(BUILD_DIR)/ex3 src/ex3.c
 
 .PHONY: clean
 
