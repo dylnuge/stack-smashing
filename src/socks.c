@@ -25,11 +25,14 @@ void unsafe_bind_and_read_domain_socket(char *buf, char *path) {
     // Wait for an incoming connection, then accept it and capture the
     // connection's file descriptor
     int cd = accept(fd, NULL, NULL);
+
+    // XXX THIS IS A BUFFER OVERFLOW VULNERABILITY XXX
     // Read 8 bytes at a time
     // Here's where the unsafe code comes into play. We don't check the size of
     // the buffer we're passed, so we'll keep reading until the connection
     // closes (8 bytes at a time), even if the buffer has run out of space for
     // us.
+    // XXX THIS IS A BUFFER OVERFLOW VULNERABILITY XXX
     while(read(cd, buf, 8) != 0) {
         buf += 8;
     }
@@ -64,12 +67,13 @@ void unsafe_bind_and_read_socket(char *buf, unsigned short port) {
     bind(fd, (struct sockaddr*) &addr, sizeof(addr));
     listen(fd, 1);
     int cd = accept(fd, NULL, NULL);
+    // XXX THIS IS A BUFFER OVERFLOW VULNERABILITY XXX
     while(read(cd, buf, 8) != 0) {
-        printf("read %s\n", buf);
         buf += 8;
     }
 
     // Clean up
     close(fd);
+    close(cd);
 }
 

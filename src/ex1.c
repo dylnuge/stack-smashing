@@ -48,7 +48,7 @@ int main(int argc, char **args) {
         printf("Exploit succeeded\n");
         return 0;
     } else {
-        printf("User unauthorized, key is %x\n", key);
+        printf("User unauthorized, key is 0x%08x\n", key);
         return 1;
     }
 }
