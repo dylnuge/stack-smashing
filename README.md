@@ -36,6 +36,18 @@ Note the backticks around the Python part of that command. That will take the
 output of the python command and send it to the shell; in turn, the `<<<` will
 redirect _that_ into netcat's standard in.
 
+## Example 3 Instructions
+
+This example is the most challenging, but it's equivalent to a real exploit you
+might find "in the wild". Sending in data to it works the same way it did in
+example 2.
+
+Check out the online assembler here: https://defuse.ca/online-x86-assembler.htm
+It will help a lot with this problem (you could also use local tools to do this,
+if you prefer).
+
+The hints directory contains some help for ex3 if you really get stuck.
+
 ## Using Objdump
 
 `objdump` is an incredibly useful command that we can use to get information

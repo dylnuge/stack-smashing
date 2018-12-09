@@ -13,6 +13,10 @@ char * SOCKET_PATH = "socket";
 // to fully figure out. Don't give up! This is _entirely_ doable with the
 // knowledge you already have plus a little bit of assembly, and accomplishing
 // it will feel extraordinary.
+//
+// If you need some hints, check the `hints` directory. Note that the file
+// called `solution.md` in there contains the whole answer and won't give you
+// any satisfaction...avoid reading it until you're done ;)
 
 // This is the function we want to call
 void root_mode(int key) {
