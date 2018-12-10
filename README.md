@@ -5,7 +5,7 @@ Slides are in the keynote file.
 This is tested under MacOS Mojave (10.14) and MacOS High Sierra (10.13).
 
 In order to build the code, you'll need to install the Xcode CLI tools, which
-should include `make`, `clang`, `ld`, `objdump`, and `nc`.
+should include `make`, `clang`, `ld`, and `objdump`.
 
 To make all examples, type `make`. You can make a specific example, like ex2,
 with `make ex2`.
@@ -24,17 +24,12 @@ it without any arguments
 This example is a little trickier to work with. It creates a socket file at
 `socket` in the directory you run it from.
 
-You can write to a file socket using `nc -U socket`. You probably want to write
-a few non-printable bytes to it; `python` is super handy for this. Here's an
-example of using Python 2 to write the hex 0xfeedface to a unix socket:
+You can write to a unix (file) socket with `nc -U`, but for sending
+non-printable characters, it will be easier to use the code in `socket_send.py`.
+Just replace the `exploit` variable with the string you want to send.
 
-```
-nc -U socket <<< `python -c "print '\xfe\xed\xfa\xce'"`
-```
-
-Note the backticks around the Python part of that command. That will take the
-output of the python command and send it to the shell; in turn, the `<<<` will
-redirect _that_ into netcat's standard in.
+Note that characters like `\xfe` in Python represent the byte `0xfe`. This is
+useful for writing non printable characters (i.e. arbitrary bytes).
 
 ## Example 3 Instructions
 
