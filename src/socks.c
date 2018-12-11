@@ -7,11 +7,26 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+// Check if a socket exists at `path` and clear it if it does.
+// Such an ugly way of handling this case, but it works.
+// TODO(dylan): Better ways of handling this:
+// * Capture SIGINT (Ctrl+C) and clean up sockets on exit
+// * Actual error handling in the bind_and_read function
+void clear_domain_socket_if_exists(char *path) {
+    if(access(path, F_OK) == 0) {
+        unlink(path);
+    }
+}
 
 // For the most part, this code isn't crucial to understand. It's basically the
 // boilerplate minimum for working with sockets. It's not very good socket code.
 // If you're thinking of learning how sockets work, seriously, this is bad code
 void unsafe_bind_and_read_domain_socket(char *buf, char *path) {
+    // Ugly hack: Clear the domain socket if there's already something at path.
+    // This happens because this function never cleaned up, usually caused by
+    // exiting the program with SIGINT (CTRL-C). We should just handle SIGINT
+    // cleanup but this works for now.
+    clear_domain_socket_if_exists(path);
     // Open a unix (PF_LOCAL) socket and capture the file descriptor
     int fd = socket(PF_LOCAL, SOCK_STREAM, 0);
     // Bind that socket to a file at `path`
@@ -76,4 +91,3 @@ void unsafe_bind_and_read_socket(char *buf, unsigned short port) {
     close(fd);
     close(cd);
 }
-
