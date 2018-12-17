@@ -2,7 +2,11 @@
 
 Slides are in the keynote file.
 
-This is tested under MacOS Mojave (10.14) and MacOS High Sierra (10.13).
+This repo is built for use on MacOS and was tested under MacOS Mojave (10.14)
+and MacOS High Sierra (10.13). It probably works on Linux with some tweaks, but
+I haven't tested it there and there might be different OS or ELF-level
+protections that need to be disabled in the linker or compiler. Feel free to
+ping me on Twitter and I'll check out if your changes work against my solutions.
 
 In order to build the code, you'll need to install the Xcode CLI tools, which
 should include `make`, `clang`, `ld`, and `objdump`.
@@ -84,4 +88,5 @@ If you have GNU objdump instead, your output will look like this:
 ```
 
 The astute will notice this is _more or less_ identical to the other. The
-assembler syntax is different.
+assembler syntax is a little different, but the addresses (which is what we care
+about) should be identical.
